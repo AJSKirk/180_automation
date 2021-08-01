@@ -15,8 +15,8 @@ def query(query_string):
     r = requests.post(MONDAY_URL, json=body, headers=headers)
     response = r.json()
     if query_string.startswith('query') and 'data' not in response.keys():
-        print("Query failed - Sleeping 20s")
-        time.sleep(20)
+        print("Query failed - Sleeping 60s")
+        time.sleep(60)
         return query(query_string)
     else:
         return response

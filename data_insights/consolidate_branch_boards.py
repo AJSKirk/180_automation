@@ -48,7 +48,7 @@ def concat_boards_to_csv(branch_pattern, board_pattern, csv_name=None):
     locs = get_boards(branch_pattern, board_pattern)
     data = list(concat_boards(locs))
     with open(csv_name, 'w') as f:
-        dw = csv.DictWriter(f, data[0].keys())
+        dw = csv.DictWriter(f, set(key for row in data for key in row.keys()))
         dw.writeheader()
         dw.writerows(data)
     print("Data written to {}".format(csv_name))
