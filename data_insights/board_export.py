@@ -6,7 +6,7 @@ import csv
 MONDAY_KEY = open('monday_key.txt', 'r').read().strip()
 MONDAY_URL = "https://api.monday.com/v2"
 
-BOARD_TO_SCRAPE = 'TEST Projects'
+BOARD_TO_SCRAPE = '1.2 Branch Contact List - BRANCH TEMPLATE'
 
 
 def query_monday_api(query):
@@ -19,18 +19,18 @@ def query_monday_api(query):
 
 def get_board_id(board_name: str) -> int:
     """Returns the ID associated with a given board name"""
-    query = "query {boards {id name}}"
+    query = "query {boards (limit: 999) {id name}}"
     boards = query_monday_api(query)['data']['boards']
     return next(board['id'] for board in boards if board['name'] == board_name)
 
 
 def get_data_from_board(board_id: int):
-    query = "query {{boards (ids: {}) {{items {{name column_values {{title text}}}}}}}}".format(board_id)
+    query = "query {{boards (ids: {}) {{items (limit: 9999) {{name group {{title}} column_values {{title text}}}}}}}}".format(board_id)
     return query_monday_api(query)['data']['boards'][0]['items']
 
 
 def flatten_item_data(item_row) -> Dict[str, str]:
-    flat = {'item_name': item_row['name']}
+    flat = {'item_name': item_row['name'], 'group_name': item_row['group']['title']}
     flat.update({field['title']: field['text'] for field in item_row['column_values']})
     return flat
 
