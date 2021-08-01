@@ -47,8 +47,15 @@ def concat_boards_to_csv(branch_pattern, board_pattern, csv_name=None):
     if csv_name is None: csv_name = '{}_{}.csv'.format(branch_pattern, board_pattern)
     locs = get_boards(branch_pattern, board_pattern)
     data = list(concat_boards(locs))
+    cols = data[0].keys()
+
+    for row in data[1:]:  # God this is ugly, but I'm tired
+        for key in row.keys():
+            if key not in cols:
+                cols.append(key)
+
     with open(csv_name, 'w') as f:
-        dw = csv.DictWriter(f, set(key for row in data for key in row.keys()))
+        dw = csv.DictWriter(f, cols)
         dw.writeheader()
         dw.writerows(data)
     print("Data written to {}".format(csv_name))
